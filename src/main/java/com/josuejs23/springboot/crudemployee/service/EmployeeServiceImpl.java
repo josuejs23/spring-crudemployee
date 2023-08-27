@@ -1,6 +1,6 @@
 package com.josuejs23.springboot.crudemployee.service;
 
-import com.josuejs23.springboot.crudemployee.dao.EmployeeDAO;
+import com.josuejs23.springboot.crudemployee.dao.EmployeeRepository;
 import com.josuejs23.springboot.crudemployee.entity.Employee;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,34 +9,32 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class EmployeServiceImpl implements EmployeeService{
+public class EmployeeServiceImpl implements EmployeeService{
 
-    private EmployeeDAO employeeDAO;
+    private EmployeeRepository employeeRepository;
 
     @Autowired
-    public EmployeServiceImpl(EmployeeDAO employeeDAO) {
-        this.employeeDAO = employeeDAO;
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
     }
 
     @Override
     public List<Employee> findAll() {
-        return employeeDAO.findAll();
+        return employeeRepository.findAll();
     }
 
     @Override
     public Employee getEmployeeById(int id) {
-        return employeeDAO.findById(id);
+        return employeeRepository.findById(id).orElse(null);
     }
 
     @Override
-    @Transactional
     public Employee saveEmployee(Employee employee) {
-        return this.employeeDAO.save(employee);
+        return this.employeeRepository.save(employee);
     }
 
     @Override
-    @Transactional
     public void deleteEmployeeByid(int id) {
-        employeeDAO.deleteById(id);
+        employeeRepository.deleteById(id);
     }
 }

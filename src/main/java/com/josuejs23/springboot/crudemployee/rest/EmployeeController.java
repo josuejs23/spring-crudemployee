@@ -2,10 +2,9 @@ package com.josuejs23.springboot.crudemployee.rest;
 
 import com.josuejs23.springboot.crudemployee.dao.EmployeeDAO;
 import com.josuejs23.springboot.crudemployee.entity.Employee;
+import com.josuejs23.springboot.crudemployee.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -13,15 +12,37 @@ import java.util.List;
 @RequestMapping("/api")
 public class EmployeeController {
 
-    private EmployeeDAO employeeDAO;
+    private EmployeeService employeeService;
 
     @Autowired
-    public EmployeeController(EmployeeDAO employeeDAO) {
-        this.employeeDAO = employeeDAO;
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
     }
 
     @GetMapping("/employees")
     public List<Employee> getAllEmployees(){
-        return this.employeeDAO.findAll();
+        return this.employeeService.findAll();
     }
+
+    @GetMapping("/employees/{id}")
+    public Employee getEmployeeById(@PathVariable("id") int id){
+        return this.employeeService.getEmployeeById(id);
+    }
+
+    @DeleteMapping("/employees/{id}")
+    public void deleteEmployeeById(@PathVariable("id") int id){
+        this.employeeService.deleteEmployeeByid(id);
+    }
+
+    @PostMapping("/employees")
+    public Employee createEmployee(@RequestBody Employee employee){
+        employee.setId(0);
+        return this.employeeService.saveEmployee(employee);
+    }
+
+    @PutMapping("/employees")
+    public void updateEmployee(@RequestBody Employee employee){
+        this.employeeService.saveEmployee(employee);
+    }
+
 }

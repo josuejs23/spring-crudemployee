@@ -18,11 +18,26 @@ import javax.sql.DataSource;
 @Configuration
 public class DemoSecurityConfig {
 
-
+    /*
     @Bean
     public UserDetailsManager userDetailsManager(DataSource dataSource){
         // Springs Boots looks for tables called users and authorities
         return new JdbcUserDetailsManager(dataSource);
+    }*/
+
+    @Bean
+    public UserDetailsManager userDetailsManager(DataSource dataSource){
+        // To use Custom Tables to Authorize and Security
+        JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
+        // Define a query to retrieve a user by username
+        jdbcUserDetailsManager.setUsersByUsernameQuery(
+                "select user_id, pw, active from members where user_id=?"
+        );
+        // Define a query to retrieve the authorities/roles by username
+        jdbcUserDetailsManager.setAuthoritiesByUsernameQuery(
+                "select user_id, role from roles where user_id=?"
+        );
+        return jdbcUserDetailsManager;
     }
 
     @Bean
